@@ -1,11 +1,26 @@
-﻿namespace AppliedActivity5;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Maui;
+using Microsoft.Maui.Controls;
 
-public partial class App : Application
+namespace AppliedActivity5
 {
-	public App()
-	{
-		InitializeComponent();
+    public partial class App : Application
+    {
+        public static string DatabasePath;
 
-		MainPage = new AppShell();
-	}
+        public App()
+        {
+            InitializeComponent();
+            DatabasePath = Path.Combine(FileSystem.AppDataDirectory, "mydb.db3");
+            MainPage = new NavigationPage(new MainPage());
+        }
+
+        protected override void OnStart()
+        {
+            using (var db = new AppDbContext())
+            {
+                db.Database.Migrate();
+            }
+        }
+    }
 }
